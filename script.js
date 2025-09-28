@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DADOS MOCADOS --- //
+    // --- DADOS MOCADOS COMPLETOS ---
     const MOCKED_DATA = {
         geral: {
             cards: { geracao: '125.800', carga: '15.340', reserva: '68.5%' },
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     { label: 'Solar', data: [0, 0, 0, 0, 0, 0, 100, 500, 1200, 1800, 2500, 2900, 3200, 3100, 2800, 2200, 1500, 500, 0, 0, 0, 0, 0, 0], color: 'rgba(253, 224, 71, 1)', type: 'bar' },
                 ]
             },
-            faq: ['Mostrar todas as fontes', 'Isolar geração Eólica', 'Comparar Carga e Hidráulica']
+            faq: ['Qual o custo da energia?', 'Isolar geração Eólica', 'Comparar Carga e Hidráulica']
         },
         itaipu: {
             cards: { geracao: '98.600', carga: '14.200', reserva: '75.2%' },
@@ -40,11 +40,31 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const QA_PAIRS = [
-        { keywords: ['previsão', 'demanda', 'próximo trimestre'], answer: 'A previsão de demanda para o próximo trimestre indica um aumento de 5%, impulsionado principalmente pelo setor industrial. Recomenda-se monitorar a capacidade de geração nos horários de pico.' },
-        { keywords: ['fonte mais utilizada', 'principal fonte'], answer: 'No contexto geral do sistema, a geração Hidráulica é a fonte mais utilizada, correspondendo a aproximadamente 60% da matriz energética.' },
-        { keywords: ['segurança', 'operou com segurança'], answer: 'Sim, o sistema operou dentro dos parâmetros de segurança no último mês, sem ocorrências significativas de sobrecarga ou instabilidade.' },
-        { keywords: ['custo da energia', 'preço'], answer: 'O custo médio da energia (PLD) na última semana foi de R$ 120/MWh, uma redução de 5% em relação à semana anterior devido à alta geração eólica.' },
-        { keywords: ['reserva estratégica', 'nível da reserva'], answer: 'O nível da reserva estratégica está em 68.5%, considerado um nível seguro e adequado para o período, garantindo a estabilidade do sistema.' }
+        {
+            keywords: ['previsão', 'demanda', 'próximo trimestre'],
+            answer: 'A previsão de demanda para o próximo trimestre indica um aumento de 5%, impulsionado principalmente pelo setor industrial. Recomenda-se monitorar a capacidade de geração nos horários de pico.',
+            chart_action: { title: 'Previsão de Demanda vs. Geração Atual', show: ['Carga', 'Hidráulica', 'Térmica', 'Eólica', 'Solar'] }
+        },
+        {
+            keywords: ['fonte mais utilizada', 'principal fonte'],
+            answer: 'No contexto geral do sistema, a geração Hidráulica é a fonte mais utilizada, correspondendo a aproximadamente 60% da matriz energética.',
+            chart_action: { title: 'Principal Fonte: Geração Hidráulica vs. Carga', show: ['Hidráulica', 'Carga'] }
+        },
+        {
+            keywords: ['segurança', 'operou com segurança'],
+            answer: 'Sim, o sistema operou dentro dos parâmetros de segurança no último mês, sem ocorrências significativas de sobrecarga ou instabilidade.',
+            chart_action: { title: 'Operação do Sistema: Geração Total vs. Carga', show: ['Carga', 'Hidráulica', 'Térmica', 'Eólica', 'Solar'] }
+        },
+        {
+            keywords: ['custo da energia', 'preço'],
+            answer: 'O custo médio da energia (PLD) na última semana foi de R$ 120/MWh, uma redução de 5% em relação à semana anterior devido à alta geração eólica.',
+            chart_action: { title: 'Análise de Custo: G. Térmica e Eólica vs. Carga', show: ['Térmica', 'Eólica', 'Carga'] }
+        },
+        {
+            keywords: ['reserva estratégica', 'nível da reserva'],
+            answer: 'O nível da reserva estratégica está em 68.5%, considerado um nível seguro e adequado para o período, garantindo a estabilidade do sistema.',
+            chart_action: { title: 'Análise de Reserva: Geração Total vs. Carga', show: ['Carga', 'Hidráulica', 'Térmica', 'Eólica', 'Solar'] }
+        }
     ];
 
     // --- ELEMENTOS DO DOM --- //
@@ -93,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             borderColor: ds.color
         }));
         
+        energyChart.options.plugins.title.text = 'Curvas de Carga e Geração Diária (MW)';
         updateChartToggles();
         energyChart.update();
 
@@ -144,11 +165,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleQuestion(question) {
         const lowerCaseQuestion = question.toLowerCase();
-        
+
         for (const qa of QA_PAIRS) {
             if (qa.keywords.some(keyword => lowerCaseQuestion.includes(keyword))) {
                 aiResponseBox.innerHTML = `<p>${qa.answer}</p>`;
-                return;
+                
+                if (qa.chart_action) {
+                    const action = qa.chart_action;
+                    if (action.title) {
+                        energyChart.options.plugins.title.text = action.title;
+                    }
+                    if (action.show) {
+                        energyChart.data.datasets.forEach((ds, index) => {
+                            const isVisible = action.show.includes(ds.label);
+                            energyChart.setDatasetVisibility(index, isVisible);
+                        });
+                    }
+                    energyChart.update();
+                    updateChartToggles();
+                }
+                return; 
             }
         }
 
@@ -194,7 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
             foundAction = true;
         }
 
-        if (!foundAction) {
+        if (foundAction) {
+            energyChart.options.plugins.title.text = 'Curvas de Carga e Geração Diária (MW)';
+        } else {
             responseText = `Não tenho uma resposta pronta para "${question}", mas a performance geral, com base nos dados de ${usinaSelector.options[usinaSelector.selectedIndex].text}, está dentro do esperado.`;
         }
 

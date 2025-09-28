@@ -1,4 +1,4 @@
-# ILUMIA - Dashboard de Análise Energética
+# LUMIA - Dashboard de Análise Energética
 
 Este é um projeto de dashboard interativo para visualização e análise de dados do balanço energético. A interface permite a exploração de dados através de gráficos dinâmicos e um assistente de IA mocados.
 
