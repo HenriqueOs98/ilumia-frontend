@@ -49,6 +49,25 @@
         </section>
 
         <section class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+          <!-- Filtro de Tempo -->
+          <div id="time-filter-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div>
+              <label for="year-selector" class="block text-sm font-medium mb-2 text-dark-blue">Ano</label>
+              <select id="year-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0"></select>
+            </div>
+            <div>
+              <label for="month-selector" class="block text-sm font-medium mb-2 text-dark-blue">Mês</label>
+              <select id="month-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0"></select>
+            </div>
+            <div>
+              <label for="day-selector" class="block text-sm font-medium mb-2 text-dark-blue">Dia</label>
+              <select id="day-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0"></select>
+            </div>
+            <div>
+              <label for="hour-selector" class="block text-sm font-medium mb-2 text-dark-blue">Hora</label>
+              <select id="hour-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0"></select>
+            </div>
+          </div>
           <!-- Controles do Gráfico -->
           <div id="chart-toggles" class="chart-toggles-container"></div>
           <!-- Canvas do Gráfico -->
@@ -67,12 +86,16 @@
           </div>
 
           <div class="p-6">
-            <label for="usina-selector" class="block text-sm font-medium mb-2 text-dark-blue">Contexto da Análise</label>
-            <select id="usina-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0">
-              <option value="geral">Dados Gerais do Sistema</option>
-              <option value="itaipu">Usina de Itaipu</option>
-              <option value="belo_monte">Usina de Belo Monte</option>
-            </select>
+            <div>
+              <label for="subsistema-selector" class="block text-sm font-medium mb-2 text-dark-blue">Subsistema</label>
+              <select id="subsistema-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0">
+                <option value="geral">Sistema Interligado Nacional</option>
+                <option value="sudeste">Subsistema Sudeste/CO</option>
+                <option value="sul">Subsistema Sul</option>
+                <option value="nordeste">Subsistema Nordeste</option>
+                <option value="norte">Subsistema Norte</option>
+              </select>
+            </div>
           </div>
 
           <div class="ai-chat-history">

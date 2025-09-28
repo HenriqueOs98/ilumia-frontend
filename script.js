@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DADOS MOCADOS COMPLETOS ---
     const MOCKED_DATA = {
         geral: {
             cards: { geracao: '125.800', carga: '15.340', reserva: '68.5%' },
@@ -13,31 +12,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     { label: 'Solar', data: [0, 0, 0, 0, 0, 0, 100, 500, 1200, 1800, 2500, 2900, 3200, 3100, 2800, 2200, 1500, 500, 0, 0, 0, 0, 0, 0], color: 'rgba(253, 224, 71, 1)', type: 'bar' },
                 ]
             },
-            faq: ['Qual o custo da energia?', 'Isolar geração Eólica', 'Comparar Carga e Hidráulica']
+            faq: ['Qual o custo da energia?', 'Qual a previsão de demanda?', 'Como está a reserva hídrica?']
         },
-        itaipu: {
-            cards: { geracao: '98.600', carga: '14.200', reserva: '75.2%' },
-            chart: {
-                labels: ['00h', '01h', '02h', '03h', '04h', '05h', '06h', '07h', '08h', '09h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h', '23h'],
-                datasets: [
-                    { label: 'Carga', data: [7000, 6800, 6700, 6600, 6800, 7200, 8000, 9500, 10800, 11500, 12000, 12200, 12100, 12300, 12500, 12200, 11800, 11500, 12800, 13500, 13000, 11800, 10000, 8000], color: 'rgba(249, 67, 0, 1)', type: 'line', fill: true, borderWidth: 4 },
-                    { label: 'Hidráulica', data: [7000, 6800, 6700, 6600, 6800, 7200, 8000, 9500, 10800, 11500, 12000, 12200, 12100, 12300, 12500, 12200, 11800, 11500, 12800, 13500, 13000, 11800, 10000, 8000], color: 'rgba(0, 42, 117, 1)', type: 'bar' },
-                ]
-            },
-            faq: ['Qual a geração de Itaipu no último dia?', 'A geração de Itaipu superou a meta?', 'Qual a previsão de geração para a próxima semana?']
-        },
-        belo_monte: {
-            cards: { geracao: '11.233', carga: '4.550', reserva: '62.1%' },
-            chart: {
-                labels: ['00h', '01h', '02h', '03h', '04h', '05h', '06h', '07h', '08h', '09h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h', '23h'],
-                datasets: [
-                    { label: 'Carga', data: [3000, 2800, 2700, 2600, 2800, 3200, 4000, 4500, 4800, 5000, 5200, 5300, 5100, 5000, 4800, 4500, 4200, 4000, 4300, 4500, 4200, 3800, 3500, 3200], color: 'rgba(249, 67, 0, 1)', type: 'line', fill: true, borderWidth: 4 },
-                    { label: 'Hidráulica', data: [3000, 2800, 2700, 2600, 2800, 3200, 4000, 4500, 4800, 5000, 5200, 5300, 5100, 5000, 4800, 4500, 4200, 4000, 4300, 4500, 4200, 3800, 3500, 3200], color: 'rgba(0, 42, 117, 1)', type: 'bar' },
-                ]
-            },
-            faq: ['Qual o fator de capacidade de Belo Monte?', 'Houve alguma interrupção na geração?', 'Como a vazão do rio Xingu afeta a geração?']
-        }
+        sudeste: {},
+        sul: {},
+        nordeste: {},
+        norte: {}
     };
+
+    // --- PREENCHIMENTO DE DADOS MOCADOS ---
+    function populateMockData() {
+        // Popula dados para outros subsistemas
+        ['sudeste', 'sul', 'nordeste', 'norte'].forEach(sub => {
+            MOCKED_DATA[sub] = JSON.parse(JSON.stringify(MOCKED_DATA.geral));
+            const randomFactor = 0.8 + Math.random() * 0.4;
+            MOCKED_DATA[sub].cards.geracao = (parseFloat(MOCKED_DATA.geral.cards.geracao.replace('.', '')) * randomFactor).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+            MOCKED_DATA[sub].chart.datasets.forEach(ds => {
+                ds.data = ds.data.map(d => Math.round(d * randomFactor));
+            });
+        });
+    }
 
     const QA_PAIRS = [
         {
@@ -61,14 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
             chart_action: { title: 'Análise de Custo: G. Térmica e Eólica vs. Carga', show: ['Térmica', 'Eólica', 'Carga'] }
         },
         {
-            keywords: ['reserva estratégica', 'nível da reserva'],
-            answer: 'O nível da reserva estratégica está em 68.5%, considerado um nível seguro e adequado para o período, garantindo a estabilidade do sistema.',
-            chart_action: { title: 'Análise de Reserva: Geração Total vs. Carga', show: ['Carga', 'Hidráulica', 'Térmica', 'Eólica', 'Solar'] }
+            keywords: ['reserva hídrica', 'nível dos reservatórios'],
+            answer: 'O nível agregado dos reservatórios do subsistema está em 72%, um patamar confortável para esta época do ano. A visão mensal oferece uma melhor perspectiva sobre a evolução das reservas.',
         }
     ];
 
     // --- ELEMENTOS DO DOM --- //
-    const usinaSelector = document.getElementById('usina-selector');
+    const subsistemaSelector = document.getElementById('subsistema-selector');
+    const yearSelector = document.getElementById('year-selector');
+    const monthSelector = document.getElementById('month-selector');
+    const daySelector = document.getElementById('day-selector');
+    const hourSelector = document.getElementById('hour-selector');
     const askButton = document.getElementById('ask-button');
     const aiQuestionInput = document.getElementById('ai-question');
     const aiResponseBox = document.getElementById('ai-response');
@@ -87,12 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                title: { display: true, text: 'Curvas de Carga e Geração Diária (MW)', font: { size: 18 }, color: '#002246' },
+                title: { display: true, text: 'Curvas de Carga e Geração (MW)', font: { size: 18 }, color: '#002246' },
                 legend: { display: false }
             },
             scales: {
                 y: { beginAtZero: true, title: { display: true, text: 'Potência (MW)' }, stacked: true },
-                x: { stacked: true, title: { display: true, text: 'Hora do Dia' } }
+                x: { stacked: true, title: { display: true, text: 'Período' } }
             },
             interaction: { intersect: false, mode: 'index' }
         }
@@ -100,8 +97,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES --- //
 
-    function updateDashboard(context) {
-        const data = MOCKED_DATA[context];
+    function populateTimeFilters() {
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 1990; year--) {
+            const option = new Option(year, year);
+            yearSelector.add(option);
+        }
+
+        for (let month = 1; month <= 12; month++) {
+            const option = new Option(month, month);
+            monthSelector.add(option);
+        }
+
+        for (let day = 1; day <= 31; day++) {
+            const option = new Option(day, day);
+            daySelector.add(option);
+        }
+
+        for (let hour = 0; hour <= 23; hour++) {
+            const option = new Option(`${hour.toString().padStart(2, '0')}h`, hour);
+            hourSelector.add(option);
+        }
+    }
+
+    function updateDashboard(subsistema) {
+        const data = MOCKED_DATA[subsistema];
         cardGeracao.textContent = data.cards.geracao;
         cardCarga.textContent = data.cards.carga;
         cardReserva.textContent = data.cards.reserva;
@@ -113,12 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
             borderColor: ds.color
         }));
         
-        energyChart.options.plugins.title.text = 'Curvas de Carga e Geração Diária (MW)';
+        energyChart.options.plugins.title.text = `Curvas de Carga e Geração`;
         updateChartToggles();
         energyChart.update();
 
+        const faqData = MOCKED_DATA[subsistema].faq;
         faqContainer.innerHTML = '';
-        data.faq.forEach(q => {
+        faqData.forEach(q => {
             const faqButton = document.createElement('button');
             faqButton.className = 'bg-gray-200 hover:bg-gray-300 text-dark-blue text-sm font-medium py-1 px-3 rounded-full transition';
             faqButton.textContent = q;
@@ -172,17 +193,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (qa.chart_action) {
                     const action = qa.chart_action;
-                    if (action.title) {
-                        energyChart.options.plugins.title.text = action.title;
-                    }
+                    if (action.title) energyChart.options.plugins.title.text = action.title;
                     if (action.show) {
                         energyChart.data.datasets.forEach((ds, index) => {
-                            const isVisible = action.show.includes(ds.label);
-                            energyChart.setDatasetVisibility(index, isVisible);
+                            energyChart.setDatasetVisibility(index, action.show.includes(ds.label));
                         });
                     }
                     energyChart.update();
                     updateChartToggles();
+                }
+                if (qa.action) {
+                    qa.action({ subsistemaSelector });
                 }
                 return; 
             }
@@ -231,9 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (foundAction) {
-            energyChart.options.plugins.title.text = 'Curvas de Carga e Geração Diária (MW)';
+            energyChart.options.plugins.title.text = `Curvas de Carga e Geração`;
         } else {
-            responseText = `Não tenho uma resposta pronta para "${question}", mas a performance geral, com base nos dados de ${usinaSelector.options[usinaSelector.selectedIndex].text}, está dentro do esperado.`;
+            responseText = `Não tenho uma resposta pronta para "${question}", mas a performance geral, com base nos dados de ${subsistemaSelector.options[subsistemaSelector.selectedIndex].text}, está dentro do esperado.`;
         }
 
         energyChart.update();
@@ -242,7 +263,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- EVENT LISTENERS --- //
-    usinaSelector.addEventListener('change', (e) => updateDashboard(e.target.value));
+    subsistemaSelector.addEventListener('change', (e) => updateDashboard(e.target.value));
+    yearSelector.addEventListener('change', (e) => updateDashboard(subsistemaSelector.value));
+    monthSelector.addEventListener('change', (e) => updateDashboard(subsistemaSelector.value));
+    daySelector.addEventListener('change', (e) => updateDashboard(subsistemaSelector.value));
+    hourSelector.addEventListener('change', (e) => updateDashboard(subsistemaSelector.value));
+
     askButton.addEventListener('click', () => {
         const question = aiQuestionInput.value;
         askButton.classList.add('button-clicked');
@@ -256,5 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- INICIALIZAÇÃO --- //
+    populateMockData();
+    populateTimeFilters();
     updateDashboard('geral');
 });
