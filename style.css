@@ -1,0 +1,90 @@
+/* Configuração de cores personalizadas do Tailwind e fonte padrão */
+:root {
+  --color-primary: #090A59;
+  --color-secondary: #F94300;
+  --color-dark-blue: #002246;
+  --color-medium-blue: #002A75;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f7f7f7;
+}
+
+.text-primary { color: var(--color-primary); }
+.bg-primary { background-color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-dark-blue { background-color: var(--color-dark-blue); }
+.bg-medium-blue { background-color: var(--color-medium-blue); }
+.text-dark-blue { color: var(--color-dark-blue); }
+
+/* Ajustes visuais para elementos de formulário */
+select, input[type="date"], input[type="text"] {
+  border-color: var(--color-medium-blue) !important;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+select:focus, input[type="date"]:focus, input[type="text"]:focus {
+  border-color: var(--color-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(249, 67, 0, 0.2);
+}
+
+/* Animação de clique do botão */
+@keyframes button-click {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.button-clicked { animation: button-click 0.3s ease-in-out; }
+
+/* Estilos para o Assistente de IA */
+.ai-assistant {
+  background-color: #FFFFFF;
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ai-assistant-header {
+  padding: 1.5rem; /* p-6 */
+  background-color: var(--color-medium-blue);
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.ai-chat-history {
+  flex-grow: 1;
+  padding: 1.5rem; /* p-6 */
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.ai-faq-container {
+  padding: 1.5rem; /* p-6 */
+  border-top: 1px solid #e5e7eb; /* border-gray-200 */
+}
+
+.ai-input-area {
+  padding: 1.5rem; /* p-6 */
+  border-top: 1px solid #e5e7eb; /* border-gray-200 */
+}
+
+/* Correção do input com botão */
+.input-with-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* space-x-2 */
+}
+
+/* Estilos para os toggles do gráfico */
+.chart-toggles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem; /* gap-3 */
+    justify-content: center;
+    padding-bottom: 1rem; /* pb-4 */
+}
