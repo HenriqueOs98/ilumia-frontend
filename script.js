@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         itaipu: {
             cards: { geracao: '98.600', carga: '14.200', reserva: '75.2%' },
-            chart: { /* Dados simplificados para Itaipu */
+            chart: {
                 labels: ['00h', '01h', '02h', '03h', '04h', '05h', '06h', '07h', '08h', '09h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h', '23h'],
                 datasets: [
                     { label: 'Carga', data: [7000, 6800, 6700, 6600, 6800, 7200, 8000, 9500, 10800, 11500, 12000, 12200, 12100, 12300, 12500, 12200, 11800, 11500, 12800, 13500, 13000, 11800, 10000, 8000], color: 'rgba(249, 67, 0, 1)', type: 'line', fill: true, borderWidth: 4 },
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             faq: ['Qual a geração de Itaipu no último dia?', 'A geração de Itaipu superou a meta?', 'Qual a previsão de geração para a próxima semana?']
         },
-        belo_monte: { /* Dados simplificados para Belo Monte */
+        belo_monte: {
             cards: { geracao: '11.233', carga: '4.550', reserva: '62.1%' },
             chart: {
                 labels: ['00h', '01h', '02h', '03h', '04h', '05h', '06h', '07h', '08h', '09h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h', '23h'],
@@ -38,6 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
             faq: ['Qual o fator de capacidade de Belo Monte?', 'Houve alguma interrupção na geração?', 'Como a vazão do rio Xingu afeta a geração?']
         }
     };
+
+    const QA_PAIRS = [
+        { keywords: ['previsão', 'demanda', 'próximo trimestre'], answer: 'A previsão de demanda para o próximo trimestre indica um aumento de 5%, impulsionado principalmente pelo setor industrial. Recomenda-se monitorar a capacidade de geração nos horários de pico.' },
+        { keywords: ['fonte mais utilizada', 'principal fonte'], answer: 'No contexto geral do sistema, a geração Hidráulica é a fonte mais utilizada, correspondendo a aproximadamente 60% da matriz energética.' },
+        { keywords: ['segurança', 'operou com segurança'], answer: 'Sim, o sistema operou dentro dos parâmetros de segurança no último mês, sem ocorrências significativas de sobrecarga ou instabilidade.' },
+        { keywords: ['custo da energia', 'preço'], answer: 'O custo médio da energia (PLD) na última semana foi de R$ 120/MWh, uma redução de 5% em relação à semana anterior devido à alta geração eólica.' },
+        { keywords: ['reserva estratégica', 'nível da reserva'], answer: 'O nível da reserva estratégica está em 68.5%, considerado um nível seguro e adequado para o período, garantindo a estabilidade do sistema.' }
+    ];
 
     // --- ELEMENTOS DO DOM --- //
     const usinaSelector = document.getElementById('usina-selector');
@@ -53,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- GRÁFICO --- //
     const ctx = document.getElementById('energyChart').getContext('2d');
     const energyChart = new Chart(ctx, {
-        type: 'bar', // Tipo padrão, será sobrescrito pelos datasets
+        type: 'bar',
         data: { labels: [], datasets: [] },
         options: {
             responsive: true,
@@ -136,16 +144,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleQuestion(question) {
         const lowerCaseQuestion = question.toLowerCase();
-        let responseText = `Analisando: "${question}". `; 
+        
+        for (const qa of QA_PAIRS) {
+            if (qa.keywords.some(keyword => lowerCaseQuestion.includes(keyword))) {
+                aiResponseBox.innerHTML = `<p>${qa.answer}</p>`;
+                return;
+            }
+        }
 
-        const keywords = {
-            eólica: ['eólica', 'vento'],
-            solar: ['solar', 'sol'],
-            hidráulica: ['hidráulica', 'água'],
-            térmica: ['térmica', 'termoelétrica'],
-            carga: ['carga', 'consumo']
-        };
-
+        let responseText = `Analisando: "${question}". `;
+        const keywords = { eólica: ['eólica', 'vento'], solar: ['solar', 'sol'], hidráulica: ['hidráulica', 'água'], térmica: ['térmica', 'termoelétrica'], carga: ['carga', 'consumo'] };
         let foundAction = false;
 
         if (lowerCaseQuestion.includes('todas') || lowerCaseQuestion.includes('tudo')) {
@@ -187,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!foundAction) {
-            responseText += `Com base nos dados de ${usinaSelector.options[usinaSelector.selectedIndex].text}, a performance está dentro do esperado.`;
+            responseText = `Não tenho uma resposta pronta para "${question}", mas a performance geral, com base nos dados de ${usinaSelector.options[usinaSelector.selectedIndex].text}, está dentro do esperado.`;
         }
 
         energyChart.update();
@@ -197,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- EVENT LISTENERS --- //
     usinaSelector.addEventListener('change', (e) => updateDashboard(e.target.value));
-
     askButton.addEventListener('click', () => {
         const question = aiQuestionInput.value;
         askButton.classList.add('button-clicked');
