@@ -1,0 +1,637 @@
+Resources on AWS
+Description
+Subsystems energy balance (PT-BR Balanço de energia nos subsistemas)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Installed generation capacity (PT-BR Capacidade instalada de geração)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Basic network transformation capacity (PT-BR Capacidade de transformação da rede básica)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Daily energy charge (PT-BR Carga de Energia Diária)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Monthly energy charge (PT-BR Carga de energia mensal)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Scheduled energy charge (PT-BR Carga de energia programda)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Verfied energy charge (PT-BR Carga de energia verificada)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Weekly marginal cost of operation (PT-BR Custo Marginal de Operação (CMO) semanal)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Semi-hourly marginal cost of operation (PT-BR Custo Marginal de Operação (CMO) Semi-Horário)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Contour of watersheds (PT-BR Contorno das Bacias Hidrográficas)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Hourly charge curve (PT-BR Curva de carga horária)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Unit Variable Cost of thermal power plants (PT-BR Custo Variável Unitário (CVU) das Usinas Térmicas)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Reservoir hydrological data - Daily Basis (PT-BR Dados hidrológicos de reservatório - Base Diária)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Reservoir hydrological data - Hourly Basis (PT-BR Dados hidrológicos de reservatório - Base Horária)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Power plant availability data (PT-BR Disponibilidade de Usinas)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Energy Exchange Data by Modality (PT-BR Dados de Intercâmbio de Energia por Modalidade)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Operation restriction data due to constrained-off of wind farms - breakdown by power plant (PT-BR Dados de restrição de operação por constrained-off de usinas eólicas - detalhamento por usina)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Operation restriction data due to constrained-off of wind farms (PT-BR Dados de restrição de operação por constrained-off de usinas eólicas)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Data of the relationship between power plant and group (PT-BR Dados do relacionamento entre conjuntos e usinas)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Data of the relationship between power plant and groups of small power plants (PT-BR Dados do relacionamento entre conjuntos de pequenas usinas e usinas)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Daily stored energy per basin (PT-BR Energia Armazenada (EAR) diário por bacia)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Daily stored energy per equivalent energy reservoir (PT-BR Energia Armazenada (EAR) diário por REE - reservatório equivalente de energia)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Daily stored energy per reservoir (PT-BR Energia Armazenada (EAR) diário por reservatório)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Daily stored energy per subsystem (PT-BR Energia Armazenada (EAR) diário por subsistema)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Daily affluent natural energy per basin (PT-BR Energia Natural Afluente (ENA) diário por bacia)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Daily affluent natural energy per equivalent energy reservoir (PT-BR Energia Natural Afluente (ENA) diário por REE - reservatorio equivalente de energia)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Daily affluent natural energy per reservoir (PT-BR Energia Natural Afluente (ENA) diário por reservatório)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Daily affluent natural energy per subsystem (PT-BR Energia Natural Afluente (ENA) diário por subsistema)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Turbinable spilled energy (PT-BR Energia vertida turbinável)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Reagents control equipment (PT-BR Equipamentos de controle de reativos da rede de operação)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Wind and solar generation capacity factor (PT-BR Fator de capacidade de geração eólica e solar)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Commercial generation for international export (PT-BR Geração Comercial Para Exportação Internacional)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Thermal generation due to dispatch (PT-BR Geração térmica por motivo de despacho)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Generation per power plant on an hourly basis (PT-BR Geração por usina em base horária)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Fluviometric data (PT-BR Grandezas fluviométricas)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Import of energy in commercial mode per block (PT-BR Importação de energia na modalidade comercial por bloco)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Basic Network Reliability indicator - Electric charge interrupted by disturbances (PT-BR Indicador de Confiabilidade da Rede Básica: CIPER - Carga Interrompida por Perturbações)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Basic Network Reliability indicator - DREQ, FREQ (PT-BR Indicador de Confiabilidade da Rede Básica: DREQ, FREQ)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Basic Network Reliability indicator: Robustness - RMAL, RMCS, RRB and RRBCS (PT-BR Indicador de Confiabilidade da Rede Básica: Robustez - RMAL, RMCS, RRB and RRBCS)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Basic Network Reliability indicator: SM - Severity of Disturbances (PT-BR Indicador de Confiabilidade da Rede Básica: SM - Severidade das Perturbações)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Transmission function availability indicator - converters (PT-BR Indicador de disponibilidade de função transmissão - conversores)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Transmission function availability indicator - reagents control equipment (PT-BR Indicador de disponibilidade de função transmissão - equipamentos de controle de reativos)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Transmission function availability indicator - transmission lines and transformers (PT-BR Indicador de disponibilidade de função transmissão - linhas de transmissão e transformadores)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Performance indicator of generation functions per generating unit on an yearly basis (PT-BR Indicadores de desempenho das funções geração por unidade geradora em base anual)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Performance indicator of generation functions per generating unit on an monthly basis (PT-BR Indicadores de desempenho das funções geração por unidade geradora em base mensal)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Generation function availability indicators for the National Interconnected System - monthly basis (PT-BR Indicadores de disponibilidade de função geração para o Sistema Interligado Nacional (SIN) - base mensal)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+National Interconnected System exchange with other countries (PT-BR Intercâmbio do Sistema Interligado Nacional (SIN) com outros países)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Exchange between subsystems (PT-BR Intercâmbio entre subsistemas)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Operation network transmission lines (PT-BR Linhas de transmissão da rede de operação)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Power Plant Mode of Operation (PT-BR Modalidade de Operação da Usina)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Price offers for import (PT-BR Ofertas de preço para importação)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+Reservoirs (PT-BR Reservatórios)
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset
+Description
+TEIFa (Equivalent Rate of Forced Unavailability) and TEIP (Scheduled Unavailability Rate) Rates (PT-BR Taxas TEIFa (Taxa Equivalente de Indisponibilidade Forçada) e TEIP (Taxa de Indisponibilidade Programada))
+Resource type
+S3 Bucket
+Amazon Resource Name (ARN)
+arn:aws:s3:::ons-aws-prod-opendata
+AWS Region
+sa-east-1
+AWS CLI Access (No AWS account required)
+aws s3 ls --no-sign-request s3://ons-aws-prod-opendata/
+Explore
+Browse Dataset

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Simples - LUMIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Teste de Carregamento</h1>
+
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 class="text-xl font-semibold mb-4">1. Scripts Carregados</h2>
+            <div id="scripts-status"></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 class="text-xl font-semibold mb-4">2. ECharts</h2>
+            <div id="chart" style="width: 100%; height: 400px;"></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">3. Botão de Teste</h2>
+            <button onclick="testFunction()" class="bg-blue-500 text-white px-6 py-3 rounded-lg">
+                Testar Função
+            </button>
+            <div id="test-result" class="mt-4"></div>
+        </div>
+    </div>
+
+    <script>
+        // Teste 1: Verificar carregamento de scripts
+        const statusDiv = document.getElementById('scripts-status');
+        statusDiv.innerHTML = `
+            <p>✅ Tailwind: ${typeof tailwind !== 'undefined' ? 'Carregado' : 'OK (via CDN)'}</p>
+            <p>✅ ECharts: ${typeof echarts !== 'undefined' ? 'Carregado' : 'Não carregado'}</p>
+        `;
+
+        // Teste 2: Criar gráfico simples
+        if (typeof echarts !== 'undefined') {
+            const chartDom = document.getElementById('chart');
+            const myChart = echarts.init(chartDom);
+
+            const option = {
+                title: { text: 'Teste ECharts' },
+                tooltip: {},
+                xAxis: { data: ['A', 'B', 'C', 'D', 'E'] },
+                yAxis: {},
+                series: [{
+                    name: 'Vendas',
+                    type: 'bar',
+                    data: [5, 20, 36, 10, 10]
+                }]
+            };
+
+            myChart.setOption(option);
+            statusDiv.innerHTML += '<p>✅ Gráfico ECharts renderizado</p>';
+        } else {
+            statusDiv.innerHTML += '<p>❌ ECharts não carregado</p>';
+        }
+
+        // Teste 3: Função de teste
+        window.testFunction = () => {
+            const resultDiv = document.getElementById('test-result');
+            resultDiv.innerHTML = '<p class="text-green-600">✅ Função executada com sucesso!</p>';
+            console.log('Função de teste executada');
+        };
+
+        console.log('✓ Página de teste carregada');
+    </script>
+</body>
+</html>

@@ -1,57 +1,199 @@
 # LUMIA - Dashboard de Análise Energética
 
-Este é um projeto de dashboard interativo para visualização e análise de dados do balanço energético. A interface permite a exploração de dados através de gráficos dinâmicos e um assistente de IA mocados.
+Dashboard interativo para visualização e análise de dados do Sistema Interligado Nacional (SIN) do ONS.
 
-## Como Executar
+## 🚀 Como Usar
 
-Basta abrir o arquivo `index.html` em qualquer navegador moderno.
+### Opção 1: Servidor HTTP Local (Recomendado)
 
-## Funcionalidades
+Para carregar dados reais dos arquivos CSV locais:
 
-O dashboard é dividido em duas seções principais: o **Painel de Desempenho** e o **Assistente de IA**.
+```bash
+cd /home/prediktive/Projects/lumia-frontend
+python3 server.py
+```
 
-### Painel de Desempenho
+Depois acesse: **http://localhost:8000**
 
-- **Cards de Resumo:** Exibem indicadores chave como Geração Total, Carga Máxima e Nível da Reserva Estratégica.
-- **Gráfico Dinâmico:** Um gráfico de séries temporais que mostra a relação entre a curva de carga e as diferentes fontes de geração de energia (hidráulica, térmica, eólica, solar).
-- **Controles Interativos:** É possível ligar ou desligar a visualização de cada fonte de energia clicando nos seletores acima do gráfico. Além disso, pode-se alterar o **Subsistema** (Sudeste, Sul, etc.) e o **Período** (Diário, Semanal, Mensal) para filtrar os dados exibidos.
+### Opção 2: Abrir Diretamente
 
-### Assistente de IA
+Você pode abrir `index.html` diretamente no navegador, mas verá apenas dados de demonstração devido às restrições de CORS.
 
-O assistente de IA permite uma interação em linguagem natural para explorar os dados. Ele responde a dois tipos de comandos:
+## 📊 Funcionalidades
 
-#### 1. Comandos de Manipulação do Gráfico
+### Datasets Disponíveis
 
-Você pode pedir ao assistente para filtrar as informações do gráfico. A IA entende comandos baseados em palavras-chave como:
+1. **Curva de carga horária** - Dados horários de carga por subsistema (Cache local: 2023-2024 completo)
+2. **Balanço de energia** - Balanço energético detalhado
+3. **Carga diária** - Dados consolidados diários
+4. **Dados hidrológicos** - Reservatórios (diário/horário)
+5. **Geração por usina** - Detalhamento horário por usina
 
-- **`mostrar todas` ou `tudo`**: Exibe todas as curvas de geração e a de carga.
-- **`isolar [fonte]`**, **`apenas [fonte]`** ou **`somente [fonte]`**: Mostra apenas a curva da fonte especificada. 
-  - *Exemplo:* `isolar geração eólica`
-- **`comparar [fonte1] e [fonte2]`**: Exibe apenas as curvas das fontes mencionadas para comparação.
-  - *Exemplo:* `comparar carga e hidráulica`
+**Nota**: Dados de 2025 ainda não estão disponíveis no S3 do ONS. Os dados mais recentes são de 2024 completo.
 
-As fontes reconhecidas são: `carga`, `hidráulica`, `térmica`, `eólica` e `solar`.
+### Recursos
 
-#### 2. Perguntas e Respostas Mocadas
+- ✅ **Carregamento Automático**: Dados carregam ao abrir a página
+- ✅ **Cache Local**: Dados de 2023-2024 disponíveis offline
+- ✅ **Gráficos Interativos**: ECharts com zoom, pan e tooltips
+- ✅ **Filtros Dinâmicos**: Mudam baseados no dataset selecionado
+- ✅ **Análises Contextuais**: Perguntas inteligentes baseadas nos dados
+- ✅ **Dados Mock**: Demonstração funciona sem servidor
 
-O assistente também pode responder a um conjunto de perguntas pré-definidas. A lógica se baseia em identificar palavras-chave na sua pergunta.
+### Filtros Dinâmicos
 
-**Perguntas Reconhecidas:**
+Os filtros mudam automaticamente baseados no dataset:
 
-- **Se a pergunta contém `previsão de demanda` ou `próximo trimestre`:**
-  - **Resposta:** *"A previsão de demanda para o próximo trimestre indica um aumento de 5%, impulsionado principalmente pelo setor industrial. Recomenda-se monitorar a capacidade de geração nos horários de pico."*
+- **Curva de carga**: Subsistema (NORTE, NORDESTE, SUL, SUDESTE)
+- **Reservatórios**: Reservatório, Bacia
+- **Geração por usina**: Usina, Tipo de combustível
 
-- **Se a pergunta contém `fonte mais utilizada` ou `principal fonte`:**
-  - **Resposta:** *"No contexto geral do sistema, a geração Hidráulica é a fonte mais utilizada, correspondendo a aproximadamente 60% da matriz energética."*
+## 📁 Estrutura de Arquivos
 
-- **Se a pergunta contém `segurança` ou `operou com segurança`:**
-  - **Resposta:** *"Sim, o sistema operou dentro dos parâmetros de segurança no último mês, sem ocorrências significativas de sobrecarga ou instabilidade."*
+```
+lumia-frontend/
+├── index.html              # Página principal
+├── style.css               # Estilos personalizados
+├── script-new.js           # Lógica principal (ECharts)
+├── ons-datasets.js         # Integração com S3 do ONS
+├── dataset-metadata.js     # Metadados dos datasets
+├── server.py               # Servidor HTTP local
+├── datasets/               # Cache local
+│   ├── curva-carga-2023.csv    # 1.4MB
+│   ├── curva-carga-2024.csv    # 1.4MB
+│   └── dicionario-curva-carga.pdf
+└── README.md
+```
 
-- **Se a pergunta contém `custo da energia` ou `preço`:**
-  - **Resposta:** *"O custo médio da energia (PLD) na última semana foi de R$ 120/MWh, uma redução de 5% em relação à semana anterior devido à alta geração eólica."*
+## 🔧 Tecnologias
 
-- **Se a pergunta contém `reserva hídrica` ou `nível dos reservatórios`:**
-  - **Resposta:** *"O nível agregado dos reservatórios do subsistema está em 72%, um patamar confortável para esta época do ano. A visão mensal oferece uma melhor perspectiva sobre a evolução das reservas."*
-  - **Ação Adicional:** O filtro de período é alterado para **Mensal**.
+- **Apache ECharts 5.4.3** - Visualizações de dados
+- **TailwindCSS** - Estilização
+- **Python 3** - Servidor HTTP local
+- **AWS S3** - Fonte de dados ONS
+- **LLMAsAService.io** - Integração com modelos de linguagem (GPT-4, Claude, etc.)
 
-Se a pergunta não corresponder a nenhum comando ou pergunta pré-definida, o assistente fornecerá uma resposta genérica com base no contexto selecionado (Subsistema e Período).
+## 📖 Dicionários de Dados
+
+Cada dataset possui um dicionário de dados em PDF disponível no S3 do ONS:
+
+```
+s3://ons-aws-prod-opendata/dataset/[nome-dataset]/DicionarioDados_[nome].pdf
+```
+
+## 🎯 Análises Disponíveis
+
+### Perguntas Contextuais
+
+O assistente responde automaticamente a:
+
+- "Qual o maior valor?" → Máximos por subsistema
+- "Compare os subsistemas" → Médias comparativas
+- "Qual foi o pico?" → Top 5 valores mais altos
+- "Mostre as estatísticas" → Média, mín, máx, amplitude
+
+### Visualizações
+
+- **Séries Temporais**: Evolução ao longo do tempo
+- **Comparações**: Entre subsistemas/usinas
+- **Análises de Pico**: Horários e valores máximos
+- **Zoom Interativo**: Navegue pelos dados com o mouse
+
+## 🔄 Download Automático de Datasets
+
+Use o script Python para baixar todos os datasets e seus dicionários de dados:
+
+```bash
+python3 download-datasets.py
+```
+
+**O script baixa automaticamente**:
+- ✅ Arquivos CSV de dados (2023-2025)
+- ✅ Dicionários de dados em PDF de cada dataset
+- ✅ Pula arquivos que já existem (não baixa duplicados)
+- ✅ Mostra progresso e resumo ao final
+
+**Datasets incluídos**:
+1. Curva de carga horária
+2. Capacidade instalada de geração
+3. Balanço de energia subsistema
+4. Dados hidrológicos (diário e horário)
+5. Carga de energia diária
+6. Energia armazenada (EAR) por subsistema
+7. Energia natural afluente (ENA) por subsistema
+8. Disponibilidade de usinas
+
+### Download Manual (opcional)
+
+Para baixar um arquivo específico:
+
+```bash
+cd datasets
+aws s3 cp --no-sign-request s3://ons-aws-prod-opendata/dataset/curva-carga-ho/CURVA_CARGA_2024.csv curva-carga-2024.csv
+```
+
+## 🐛 Troubleshooting
+
+### "Nenhum dado encontrado"
+
+- **Solução**: Inicie o servidor HTTP com `python3 server.py`
+- **Motivo**: Navegadores bloqueiam acesso a arquivos locais por segurança (CORS)
+
+### "Dados de demonstração"
+
+- Indica que o app está usando dados mock
+- Para dados reais, use o servidor HTTP
+
+### Gráfico não aparece
+
+- Verifique o console do navegador (F12)
+- Confirme que o ECharts carregou: Deve ver "✓ LUMIA inicializado com ECharts"
+
+## 🤖 Assistente IA com LLM
+
+O LUMIA possui integração com **LLMAsAService.io** para análises inteligentes via LLM.
+
+### Configuração (Opcional)
+
+Por padrão, o assistente usa **respostas locais pré-programadas**. Para ativar LLMs reais:
+
+1. **Registre-se em** https://app.llmasaservice.io
+2. **Crie um serviço LLM** (ex: OpenAI GPT-4o)
+3. **Adicione sua API Key** do vendor (OpenAI, Anthropic, etc.)
+4. **Configure o `llm-config.js`**:
+
+```javascript
+const LLM_CONFIG = {
+    projectId: 'seu-project-id-aqui',
+    serviceName: 'openai-gpt4o',
+    mode: 'llm' // Mude de 'local' para 'llm'
+};
+```
+
+### Modos de Operação
+
+- **`mode: 'local'`** - Usa lógica JavaScript local, sem custos
+- **`mode: 'n8n'`** (padrão) - Conecta com workflow n8n via webhook
+- **`mode: 'llm'`** - Usa modelos LLM reais via LLMAsAService.io
+
+### Análises Disponíveis
+
+O assistente responde a perguntas como:
+- "Qual foi o maior valor de carga?"
+- "Compare os subsistemas NORTE e SUDESTE"
+- "Qual foi o horário de pico?"
+- "Mostre as estatísticas do período"
+- "Explique a tendência de carga"
+
+## 📝 Desenvolvimento
+
+Para adicionar novos datasets:
+
+1. Adicione metadados em `dataset-metadata.js`
+2. Atualize `ons-datasets.js` com path do S3
+3. Configure filtros e visualizações apropriadas
+4. Baixe arquivos de exemplo para `datasets/`
+
+## 📄 Licença
+
+Dashboard desenvolvido para análise de dados públicos do ONS (Operador Nacional do Sistema Elétrico).

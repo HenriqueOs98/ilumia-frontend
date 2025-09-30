@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste n8n Webhook - LUMIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6 text-blue-900">🔗 Teste de Integração n8n</h1>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Webhook URL</h2>
+            <code class="bg-gray-100 p-2 rounded block text-sm break-all">
+                https://lumia-datathons.app.n8n.cloud/webhook/5f1c0c82-0ff9-40c7-9e2e-b1a96ffe24cd/chat
+            </code>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Enviar Pergunta</h2>
+
+            <label class="block mb-2 font-medium">Pergunta:</label>
+            <input
+                type="text"
+                id="question"
+                class="w-full p-3 border-2 border-gray-300 rounded-lg mb-4"
+                placeholder="Ex: Qual foi o maior valor de carga?"
+                value="Qual foi o maior valor de carga?"
+            >
+
+            <label class="block mb-2 font-medium">Dataset:</label>
+            <select id="dataset" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-4">
+                <option value="hourly-curve">Curva de carga horária</option>
+                <option value="energy-balance">Balanço de energia</option>
+                <option value="daily-charge">Carga diária</option>
+            </select>
+
+            <button
+                onclick="sendTest()"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition"
+            >
+                🚀 Enviar Teste
+            </button>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">📤 Payload Enviado</h2>
+            <pre id="request-payload" class="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-64"></pre>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">📥 Resposta do n8n</h2>
+            <div id="response-status" class="mb-4"></div>
+            <pre id="response-payload" class="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-64"></pre>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">📊 Console de Logs</h2>
+            <div id="console-logs" class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm overflow-auto max-h-96"></div>
+        </div>
+    </div>
+
+    <script>
+        const webhookUrl = 'https://lumia-datathons.app.n8n.cloud/webhook/5f1c0c82-0ff9-40c7-9e2e-b1a96ffe24cd/chat';
+
+        function log(message, type = 'info') {
+            const consoleDiv = document.getElementById('console-logs');
+            const timestamp = new Date().toLocaleTimeString('pt-BR');
+            const color = {
+                'info': 'text-green-400',
+                'error': 'text-red-400',
+                'success': 'text-blue-400'
+            }[type];
+
+            consoleDiv.innerHTML += `<div class="${color}">[${timestamp}] ${message}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        async function sendTest() {
+            const question = document.getElementById('question').value;
+            const datasetId = document.getElementById('dataset').value;
+
+            const datasetNames = {
+                'hourly-curve': 'Curva de carga horária',
+                'energy-balance': 'Balanço de energia nos subsistemas',
+                'daily-charge': 'Carga de Energia Diária'
+            };
+
+            const payload = {
+                question: question,
+                context: {
+                    datasetName: datasetNames[datasetId],
+                    datasetDescription: 'Dados do Sistema Interligado Nacional (SIN)',
+                    dataCount: 8760,
+                    timeRange: '24/12/2024 00:00 até 31/12/2024 23:59',
+                    subsystems: ['NORTE', 'NORDESTE', 'SUL', 'SUDESTE'],
+                    dataSample: [
+                        {
+                            id_subsistema: 'SE',
+                            nom_subsistema: 'SUDESTE',
+                            din_instante: '2024-12-24 18:00:00',
+                            val_cargaenergiahomwmed: '32456.78'
+                        },
+                        {
+                            id_subsistema: 'S',
+                            nom_subsistema: 'SUL',
+                            din_instante: '2024-12-24 18:00:00',
+                            val_cargaenergiahomwmed: '10123.45'
+                        }
+                    ]
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            // Exibe payload enviado
+            document.getElementById('request-payload').textContent = JSON.stringify(payload, null, 2);
+            log(`→ Enviando requisição para: ${webhookUrl}`, 'info');
+            log(`→ Pergunta: "${question}"`, 'info');
+
+            // Limpa resposta anterior
+            document.getElementById('response-status').innerHTML = '<p class="text-gray-500">⏳ Aguardando resposta...</p>';
+            document.getElementById('response-payload').textContent = '';
+
+            try {
+                const startTime = Date.now();
+
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+
+                log(`✓ Resposta recebida em ${duration}ms`, 'success');
+                log(`✓ Status: ${response.status} ${response.statusText}`, 'success');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                // Exibe status
+                document.getElementById('response-status').innerHTML = `
+                    <div class="bg-green-100 border-l-4 border-green-500 p-4 rounded">
+                        <p class="font-bold text-green-700">✅ Sucesso!</p>
+                        <p class="text-sm text-green-600">Status: ${response.status} | Tempo: ${duration}ms</p>
+                    </div>
+                `;
+
+                // Exibe payload de resposta
+                document.getElementById('response-payload').textContent = JSON.stringify(data, null, 2);
+
+                // Extrai resposta
+                let responseText = '';
+                if (data.response) {
+                    responseText = data.response;
+                } else if (data.message) {
+                    responseText = data.message;
+                } else if (data.output) {
+                    responseText = data.output;
+                } else if (typeof data === 'string') {
+                    responseText = data;
+                }
+
+                if (responseText) {
+                    log(`← Resposta: ${responseText.substring(0, 100)}...`, 'success');
+                } else {
+                    log(`← Resposta em formato de objeto`, 'success');
+                }
+
+            } catch (error) {
+                log(`✗ Erro: ${error.message}`, 'error');
+
+                document.getElementById('response-status').innerHTML = `
+                    <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded">
+                        <p class="font-bold text-red-700">❌ Erro</p>
+                        <p class="text-sm text-red-600">${error.message}</p>
+                    </div>
+                `;
+
+                document.getElementById('response-payload').textContent = error.stack || error.message;
+            }
+        }
+
+        // Log inicial
+        log('🚀 Teste de integração n8n iniciado', 'info');
+        log(`📍 Webhook: ${webhookUrl}`, 'info');
+    </script>
+</body>
+</html>

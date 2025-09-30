@@ -7,7 +7,7 @@
   <title>LUMIA - Análise Inteligente</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -20,101 +20,124 @@
     </div>
   </header>
 
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-    <!-- Layout principal com Grid: 5 colunas para dar mais espaço ao gráfico -->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+    <!-- Layout principal com Grid: 7 colunas para melhor distribuição -->
+    <div class="grid grid-cols-1 lg:grid-cols-7 gap-6">
 
-      <!-- Coluna da Esquerda: Dashboard (ocupa 3 de 5 colunas) -->
-      <div class="lg:col-span-3 space-y-8">
+      <!-- Coluna da Esquerda: Dashboard (ocupa 4 de 7 colunas) -->
+      <div class="lg:col-span-4 space-y-5">
         <section>
-          <h2 class="text-4xl font-bold text-primary">Análise Dinâmica do Sistema</h2>
+          <h2 class="text-3xl font-bold text-primary">Análise Dinâmica do Sistema</h2>
         </section>
 
-        <section class="space-y-6">
-          <h3 class="text-3xl font-bold text-dark-blue border-b-4 border-secondary pb-2">Dashboard de Desempenho</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-8 border-secondary">
-              <p class="text-sm font-medium text-gray-500">Geração Total (MWh)</p>
-              <p id="card-geracao" class="text-4xl font-extrabold text-primary mt-1">-</p>
+        <section class="space-y-4">
+          <h3 class="text-2xl font-bold text-dark-blue border-b-4 border-secondary pb-2">Dashboard de Desempenho</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-lg border-l-8 border-secondary">
+              <p class="text-xs font-medium text-gray-500">Geração Total (MWh)</p>
+              <p id="card-geracao" class="text-3xl font-extrabold text-primary mt-1">-</p>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-8 border-medium-blue">
-              <p class="text-sm font-medium text-gray-500">Carga Máxima (MW)</p>
-              <p id="card-carga" class="text-4xl font-extrabold text-primary mt-1">-</p>
+            <div class="bg-white p-4 rounded-xl shadow-lg border-l-8 border-medium-blue">
+              <p class="text-xs font-medium text-gray-500">Carga Máxima (MW)</p>
+              <p id="card-carga" class="text-3xl font-extrabold text-primary mt-1">-</p>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-8 border-primary">
-              <p class="text-sm font-medium text-gray-500">Reserva Estratégica (%)</p>
-              <p id="card-reserva" class="text-4xl font-extrabold text-secondary mt-1">-</p>
+            <div class="bg-white p-4 rounded-xl shadow-lg border-l-8 border-primary">
+              <p class="text-xs font-medium text-gray-500">Reserva Estratégica (%)</p>
+              <p id="card-reserva" class="text-3xl font-extrabold text-secondary mt-1">-</p>
             </div>
           </div>
         </section>
 
-        <section class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-          <!-- Filtro de Tempo -->
-          <div id="time-filter-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <section class="bg-white p-4 rounded-xl shadow-lg border border-gray-200">
+          <!-- Filtro de Dataset -->
+          <div class="mb-4">
+            <label for="dataset-selector" class="block text-xs font-medium mb-1.5 text-dark-blue">Tipo de Dataset</label>
+            <select id="dataset-selector" class="w-full p-2.5 text-sm rounded-lg border-2 text-dark-blue focus:ring-0">
+              <option value="">Selecione um dataset...</option>
+              <option value="energy-balance">Balanço de energia nos subsistemas</option>
+              <option value="installed-capacity">Capacidade instalada de geração</option>
+              <option value="daily-charge">Carga de Energia Diária</option>
+              <option value="monthly-charge">Carga de energia mensal</option>
+              <option value="hourly-curve">Curva de carga horária</option>
+              <option value="reservoir-daily">Dados hidrológicos de reservatório - Base Diária</option>
+              <option value="reservoir-hourly">Dados hidrológicos de reservatório - Base Horária</option>
+              <option value="plant-availability">Disponibilidade de Usinas</option>
+              <option value="stored-energy-subsystem">Energia Armazenada (EAR) diário por subsistema</option>
+              <option value="affluent-energy-subsystem">Energia Natural Afluente (ENA) diário por subsistema</option>
+              <option value="generation-per-plant">Geração por usina em base horária</option>
+            </select>
+          </div>
+
+          <!-- Toggle de Modo de Tempo -->
+          <div class="mb-3">
+            <div class="flex items-center gap-1.5 bg-gray-100 rounded-lg p-1 w-fit">
+              <button id="mode-custom" class="px-3 py-1.5 rounded-md text-xs font-medium transition-all bg-white text-dark-blue shadow-sm">
+                📅 Customizado
+              </button>
+              <button id="mode-relative" class="px-3 py-1.5 rounded-md text-xs font-medium transition-all text-gray-600 hover:text-dark-blue">
+                ⏰ Tempo Relativo
+              </button>
+            </div>
+          </div>
+
+          <!-- Filtro de Período Customizado -->
+          <div id="custom-filters" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
             <div>
-              <label for="year-selector" class="block text-sm font-medium mb-2 text-dark-blue">Ano</label>
-              <select id="year-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0"></select>
+              <label for="start-date" class="block text-xs font-medium mb-1.5 text-dark-blue">Data/Hora de Início</label>
+              <input type="datetime-local" id="start-date" class="w-full p-2.5 text-sm rounded-lg border-2 text-dark-blue focus:ring-0">
             </div>
             <div>
-              <label for="month-selector" class="block text-sm font-medium mb-2 text-dark-blue">Mês</label>
-              <select id="month-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0"></select>
+              <label for="end-date" class="block text-xs font-medium mb-1.5 text-dark-blue">Data/Hora Final</label>
+              <input type="datetime-local" id="end-date" class="w-full p-2.5 text-sm rounded-lg border-2 text-dark-blue focus:ring-0">
             </div>
-            <div>
-              <label for="day-selector" class="block text-sm font-medium mb-2 text-dark-blue">Dia</label>
-              <select id="day-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0"></select>
-            </div>
-            <div>
-              <label for="hour-selector" class="block text-sm font-medium mb-2 text-dark-blue">Hora</label>
-              <select id="hour-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0"></select>
-            </div>
+          </div>
+
+          <!-- Filtro de Tempo Relativo (estilo CloudWatch) -->
+          <div id="relative-filters" class="hidden mb-4">
+            <label class="block text-xs font-medium mb-1.5 text-dark-blue">Período Relativo</label>
+            <select id="relative-time" class="w-full p-2.5 text-sm rounded-lg border-2 text-dark-blue focus:ring-0">
+              <option value="1h">Última 1 hora</option>
+              <option value="3h">Últimas 3 horas</option>
+              <option value="6h">Últimas 6 horas</option>
+              <option value="12h">Últimas 12 horas</option>
+              <option value="1d" selected>Último 1 dia</option>
+              <option value="3d">Últimos 3 dias</option>
+              <option value="7d">Últimos 7 dias</option>
+              <option value="14d">Últimos 14 dias</option>
+              <option value="30d">Últimos 30 dias</option>
+              <option value="90d">Últimos 90 dias</option>
+            </select>
+            <p class="text-xs text-gray-500 mt-1.5">⏰ Sempre mostra os dados mais recentes disponíveis</p>
           </div>
           <!-- Controles do Gráfico -->
-          <div id="chart-toggles" class="chart-toggles-container"></div>
-          <!-- Canvas do Gráfico -->
-          <div class="h-96">
-            <canvas id="energyChart"></canvas>
-          </div>
+          <div id="chart-toggles" class="flex flex-wrap gap-2 mb-3"></div>
+          <!-- Container do Gráfico ECharts -->
+          <div id="energyChart" class="w-full" style="height: 450px;"></div>
         </section>
       </div>
 
-      <!-- Coluna da Direita: Assistente de IA (ocupa 2 de 5 colunas) -->
-      <div class="lg:col-span-2">
-        <div class="ai-assistant">
-          <div class="ai-assistant-header">
-            <h3 class="text-2xl font-bold text-white">Assistente IA</h3>
-            <p class="text-gray-200 text-sm mt-1">Selecione o contexto e faça sua pergunta.</p>
-          </div>
-
-          <div class="p-6">
-            <div>
-              <label for="subsistema-selector" class="block text-sm font-medium mb-2 text-dark-blue">Subsistema</label>
-              <select id="subsistema-selector" class="w-full p-3 rounded-lg border-2 text-dark-blue focus:ring-0">
-                <option value="geral">Sistema Interligado Nacional</option>
-                <option value="sudeste">Subsistema Sudeste/CO</option>
-                <option value="sul">Subsistema Sul</option>
-                <option value="nordeste">Subsistema Nordeste</option>
-                <option value="norte">Subsistema Norte</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="ai-chat-history">
-             <div id="ai-response" class="text-gray-700">
-                <p class="font-medium text-dark-blue">Aguardando sua pergunta.</p>
+      <!-- Coluna da Direita: Chat IA (ocupa 3 de 7 colunas) -->
+      <div class="lg:col-span-3">
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col" style="height: 850px;">
+          <!-- Header Aprimorado -->
+          <div class="bg-gradient-to-r from-blue-600 to-green-500 p-5 text-white flex-shrink-0">
+            <div class="flex items-center gap-3">
+              <div class="bg-white/20 backdrop-blur-sm rounded-full p-2.5">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                </svg>
               </div>
-          </div>
-
-          <div class="ai-faq-container flex flex-wrap gap-2" id="faq-container">
-            <!-- FAQs serão inseridas aqui -->
-          </div>
-
-          <div class="ai-input-area">
-            <div class="input-with-button">
-              <input type="text" id="ai-question" placeholder="Ex: Isolar geração eólica" class="flex-grow p-3 rounded-lg border-2 border-gray-300 focus:ring-0 text-dark-blue">
-              <button id="ask-button" class="bg-secondary hover:bg-opacity-80 transition p-3 rounded-lg font-bold text-white shadow-md flex-shrink-0">
-                Perguntar
-              </button>
+              <div>
+                <h3 class="text-xl font-bold">Converse com LUMIA</h3>
+                <p class="text-sm opacity-90">Assistente de IA para análise de energia</p>
+              </div>
             </div>
+          </div>
+
+          <!-- Chat Container -->
+          <div id="n8n-chat-container" class="flex-grow flex flex-col bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+            <!-- n8n Chat Widget -->
+            <div id="n8n-chat-inline" class="flex-grow overflow-hidden"></div>
           </div>
         </div>
       </div>
@@ -127,7 +150,152 @@
     </div>
   </footer>
 
-  <script src="script.js" defer></script>
+  <!-- n8n Chat Widget -->
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+
+  <script src="ons-datasets.js"></script>
+  <script src="dataset-metadata.js"></script>
+  <script src="llm-config.js"></script>
+  <script src="script-new.js" defer></script>
+
+  <!-- Initialize n8n Chat Inline -->
+  <script type="module">
+    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+    const chat = createChat({
+      webhookUrl: 'https://lumia-datathons.app.n8n.cloud/webhook/4091fa09-fb9a-4039-9411-7104d213f601/chat',
+      target: '#n8n-chat-inline',
+      mode: 'fullscreen',
+      showWelcomeScreen: false,
+      initialMessages: [
+        'Olá! 👋 Sou a LUMIA, sua assistente de IA para análise de dados energéticos.',
+        'Faça aqui sua pergunta, ex: "O que é o ONS e o que esses dados significam?"'
+      ],
+      i18n: {
+        en: {
+          title: '',
+          subtitle: '',
+          footer: '',
+          getStarted: '',
+          inputPlaceholder: 'Faça sua pergunta sobre energia aqui...',
+        },
+      },
+    });
+
+    // Armazena o chat para uso posterior
+    window.n8nChat = chat;
+  </script>
+
+<style>
+    /* Customização do chat n8n inline para LUMIA - VERSÃO CORRIGIDA */
+
+    /* Variáveis de cor base para o chat */
+    :root {
+      --chat--color-primary: #002246; /* Azul Escuro (usado no botão) */
+      --chat--color-white: #ffffff;
+      --chat--message--user--background: linear-gradient(135deg, #2563eb 0%, #10b981 100%); /* Gradiente para msg de usuário */
+      --chat--message--bot--background: #ffffff;  /* Fundo da msg do bot */
+      --chat--message--bot--color: #1f2937; /* Cor do texto do bot */
+    }
+
+    /* --- ESTRUTURA GERAL DO CHAT --- */
+
+    /* Garante que o container principal do chat ocupe o espaço vertical disponível */
+    #n8n-chat-container {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    /* Faz o widget interno do n8n preencher o container */
+    #n8n-chat-inline {
+      flex: 1;
+      min-height: 0; /* Essencial para flexbox em contêineres com scroll */
+      border: none !important;
+      background: transparent !important;
+    }
+    
+    /* Remove elementos visuais desnecessários do widget */
+    #n8n-chat-inline [class*="header"],
+    #n8n-chat-inline [class*="Header"],
+    .chat-toggle {
+      display: none !important;
+    }
+
+    /* --- ÁREA DE MENSAGENS --- */
+    
+    /* Estiliza a área onde as mensagens aparecem */
+    #n8n-chat-inline [class*="messages"], 
+    #n8n-chat-inline [class*="conversation"] {
+      background: linear-gradient(to bottom, #f9fafb, #ffffff) !important;
+      padding: 1rem 1.25rem !important;
+    }
+
+    /* Mensagens do usuário */
+    #n8n-chat-inline [class*="message-user"] {
+      background: var(--chat--message--user--background) !important;
+      color: var(--chat--color-white) !important;
+      border-radius: 1rem 1rem 0.25rem 1rem !important;
+    }
+
+    /* Mensagens do bot */
+    #n8n-chat-inline [class*="message-bot"] {
+      background: var(--chat--message--bot--background) !important;
+      color: var(--chat--message--bot--color) !important;
+      border: 1px solid #e5e7eb !important;
+      border-radius: 1rem 1rem 1rem 0.25rem !important;
+    }
+
+
+    /* --- CORREÇÃO DA ÁREA DE INPUT (PARTE DE BAIXO) --- */
+
+    /* Principal: Transforma a área do formulário em um contêiner flex */
+    #n8n-chat-inline form {
+      display: flex !important;
+      align-items: center !important; /* Alinha o input e o botão verticalmente */
+      gap: 0.5rem !important; /* Espaçamento entre o input e o botão */
+      padding: 0.75rem 1rem !important;
+      border-top: 1px solid #e5e7eb !important;
+      background: white !important;
+    }
+
+    /* Faz o campo de texto crescer para preencher o espaço disponível */
+    #n8n-chat-inline form textarea,
+    #n8n-chat-inline form input[type="text"] {
+      flex: 1 !important; /* A mágica acontece aqui! */
+      min-width: 0; /* Necessário para o flex-grow funcionar corretamente */
+      border: 1px solid #e5e7eb !important;
+      border-radius: 0.5rem !important;
+      padding: 0.625rem 0.875rem !important;
+      height: 44px !important; /* Altura fixa para consistência */
+      resize: none !important; /* Impede o usuário de redimensionar */
+    }
+    
+    #n8n-chat-inline form textarea:focus,
+    #n8n-chat-inline form input[type="text"]:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08) !important;
+    }
+
+    /* Garante que o botão de enviar não encolha e fica sempre ativo */
+    #n8n-chat-inline form button[type="submit"] {
+      flex-shrink: 0 !important; /* Impede que o botão seja espremido */
+      background: var(--chat--message--user--background) !important;
+      border-radius: 0.5rem !important;
+      width: 44px !important;
+      height: 44px !important;
+      opacity: 1 !important; /* Sempre visível */
+      pointer-events: auto !important; /* Sempre clicável */
+    }
+
+    /* Remove o estilo de desabilitado */
+    #n8n-chat-inline form button[type="submit"]:disabled {
+      opacity: 1 !important;
+      cursor: pointer !important;
+      background: var(--chat--message--user--background) !important;
+    }
+  </style>
 </body>
 
 </html>

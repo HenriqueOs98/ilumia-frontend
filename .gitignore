@@ -1,0 +1,23 @@
+# Datasets locais (opcional - mantenha se quiser commitar os dados)
+# datasets/*.csv
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp

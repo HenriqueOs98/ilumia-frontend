@@ -1,38 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const MOCKED_DATA = {
-        geral: {
-            cards: { geracao: '125.800', carga: '15.340', reserva: '68.5%' },
-            chart: {
-                labels: ['00h', '01h', '02h', '03h', '04h', '05h', '06h', '07h', '08h', '09h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h', '23h'],
-                datasets: [
-                    { label: 'Carga', data: [8000, 7800, 7700, 7600, 7800, 8200, 9000, 10500, 11800, 12500, 13000, 13200, 13100, 13300, 13500, 13200, 12800, 12500, 13800, 14500, 14000, 12800, 11000, 9000], color: 'rgba(249, 67, 0, 1)', type: 'line', fill: true, borderWidth: 4 },
-                    { label: 'Hidráulica', data: [6000, 5800, 5700, 5600, 5800, 6000, 6500, 7000, 7200, 7000, 6800, 6500, 6300, 6500, 6800, 7200, 7500, 7800, 8500, 9500, 9000, 8000, 7000, 6500], color: 'rgba(0, 42, 117, 1)', type: 'bar' },
-                    { label: 'Térmica', data: [500, 500, 500, 500, 500, 500, 1000, 1500, 2000, 2500, 2800, 3000, 2800, 3000, 3200, 2800, 2000, 1500, 2500, 3000, 3000, 2500, 1500, 1000], color: 'rgba(107, 114, 128, 1)', type: 'bar' },
-                    { label: 'Eólica', data: [1200, 1300, 1400, 1500, 1450, 1300, 1100, 900, 800, 700, 600, 500, 450, 400, 500, 600, 700, 800, 900, 1000, 1100, 1300, 1400, 1300], color: 'rgba(34, 197, 94, 1)', type: 'bar' },
-                    { label: 'Solar', data: [0, 0, 0, 0, 0, 0, 100, 500, 1200, 1800, 2500, 2900, 3200, 3100, 2800, 2200, 1500, 500, 0, 0, 0, 0, 0, 0], color: 'rgba(253, 224, 71, 1)', type: 'bar' },
-                ]
-            },
-            faq: ['Qual o custo da energia?', 'Qual a previsão de demanda?', 'Como está a reserva hídrica?']
-        },
-        sudeste: {},
-        sul: {},
-        nordeste: {},
-        norte: {}
-    };
-
-    // --- PREENCHIMENTO DE DADOS MOCADOS ---
-    function populateMockData() {
-        // Popula dados para outros subsistemas
-        ['sudeste', 'sul', 'nordeste', 'norte'].forEach(sub => {
-            MOCKED_DATA[sub] = JSON.parse(JSON.stringify(MOCKED_DATA.geral));
-            const randomFactor = 0.8 + Math.random() * 0.4;
-            MOCKED_DATA[sub].cards.geracao = (parseFloat(MOCKED_DATA.geral.cards.geracao.replace('.', '')) * randomFactor).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-            MOCKED_DATA[sub].chart.datasets.forEach(ds => {
-                ds.data = ds.data.map(d => Math.round(d * randomFactor));
-            });
-        });
-    }
-
     const QA_PAIRS = [
         {
             keywords: ['previsão', 'demanda', 'próximo trimestre'],
@@ -45,9 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
             chart_action: { title: 'Principal Fonte: Geração Hidráulica vs. Carga', show: ['Hidráulica', 'Carga'] }
         },
         {
-            keywords: ['segurança', 'operou com segurança'],
-            answer: 'Sim, o sistema operou dentro dos parâmetros de segurança no último mês, sem ocorrências significativas de sobrecarga ou instabilidade.',
-            chart_action: { title: 'Operação do Sistema: Geração Total vs. Carga', show: ['Carga', 'Hidráulica', 'Térmica', 'Eólica', 'Solar'] }
+            keywords: ['10 de maio de 2023', '10/05/2023'],
+            answer: 'Dados para 10 de maio de 2023 carregados. Este foi um dia com alta geração solar no período da tarde.',
+            action: (elements) => {
+                elements.yearSelector.value = 2023;
+                elements.monthSelector.value = 5;
+                elements.daySelector.value = 10;
+                updateDashboard();
+            }
         },
         {
             keywords: ['custo da energia', 'preço'],
@@ -56,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             keywords: ['reserva hídrica', 'nível dos reservatórios'],
-            answer: 'O nível agregado dos reservatórios do subsistema está em 72%, um patamar confortável para esta época do ano. A visão mensal oferece uma melhor perspectiva sobre a evolução das reservas.',
+            answer: 'O nível agregado dos reservatórios do subsistema está em 72%, um patamar confortável para esta época do ano.',
         }
     ];
 
@@ -66,6 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const monthSelector = document.getElementById('month-selector');
     const daySelector = document.getElementById('day-selector');
     const hourSelector = document.getElementById('hour-selector');
+    const datasetSelector = document.getElementById('dataset-selector');
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
     const askButton = document.getElementById('ask-button');
     const aiQuestionInput = document.getElementById('ai-question');
     const aiResponseBox = document.getElementById('ai-response');
@@ -100,28 +74,35 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateTimeFilters() {
         const currentYear = new Date().getFullYear();
         for (let year = currentYear; year >= 1990; year--) {
-            const option = new Option(year, year);
-            yearSelector.add(option);
+            yearSelector.add(new Option(year, year));
         }
 
         for (let month = 1; month <= 12; month++) {
-            const option = new Option(month, month);
-            monthSelector.add(option);
+            monthSelector.add(new Option(month, month));
         }
 
         for (let day = 1; day <= 31; day++) {
-            const option = new Option(day, day);
-            daySelector.add(option);
+            daySelector.add(new Option(day, day));
         }
 
         for (let hour = 0; hour <= 23; hour++) {
-            const option = new Option(`${hour.toString().padStart(2, '0')}h`, hour);
-            hourSelector.add(option);
+            hourSelector.add(new Option(`${hour.toString().padStart(2, '0')}h`, hour));
         }
+        
+        // Define uma data padrão para a primeira visualização
+        yearSelector.value = 2023;
+        monthSelector.value = 5;
+        daySelector.value = 10;
     }
 
-    function updateDashboard(subsistema) {
-        const data = MOCKED_DATA[subsistema];
+    function updateDashboard() {
+        const year = yearSelector.value;
+        const month = monthSelector.value;
+        const day = daySelector.value;
+        const subsistema = subsistemaSelector.value;
+
+        const data = getMockData(year, month, day, subsistema);
+        
         cardGeracao.textContent = data.cards.geracao;
         cardCarga.textContent = data.cards.carga;
         cardReserva.textContent = data.cards.reserva;
@@ -133,11 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
             borderColor: ds.color
         }));
         
-        energyChart.options.plugins.title.text = `Curvas de Carga e Geração`;
+        energyChart.options.plugins.title.text = `Curvas de Carga e Geração - ${day}/${month}/${year}`;
         updateChartToggles();
         energyChart.update();
 
-        const faqData = MOCKED_DATA[subsistema].faq;
+        const faqData = FAQ_DATA[subsistema] || FAQ_DATA['geral'];
         faqContainer.innerHTML = '';
         faqData.forEach(q => {
             const faqButton = document.createElement('button');
@@ -184,13 +165,134 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Handler para perguntas contextuais (quando há dataset carregado)
+    function handleContextualQuestion(question) {
+        if (!currentLoadedData || !currentDatasetId) {
+            handleQuestion(question);
+            return;
+        }
+
+        const lowerQ = question.toLowerCase();
+        const metadata = getDatasetMetadata(currentDatasetId);
+
+        // Análises contextuais baseadas no dataset
+        if (lowerQ.includes('qual') && lowerQ.includes('maior')) {
+            analyzeMaxValues();
+        } else if (lowerQ.includes('compare') || lowerQ.includes('comparar')) {
+            compareSubsystems();
+        } else if (lowerQ.includes('pico') || lowerQ.includes('máxima') || lowerQ.includes('máximo')) {
+            findPeakValues();
+        } else if (lowerQ.includes('média') || lowerQ.includes('media')) {
+            calculateAverages();
+        } else {
+            // Fallback para handler genérico
+            handleQuestion(question);
+        }
+    }
+
+    // Análise de valores máximos
+    function analyzeMaxValues() {
+        if (!currentLoadedData) return;
+
+        const metadata = getDatasetMetadata(currentDatasetId);
+        const valueColumn = metadata.columns.val_cargaenergiahomwmed ? 'val_cargaenergiahomwmed' :
+                           metadata.columns.val_geracaohoraria ? 'val_geracaohoraria' : null;
+
+        if (!valueColumn) {
+            aiResponseBox.innerHTML = '<p>Não foi possível identificar a coluna de valores para análise.</p>';
+            return;
+        }
+
+        const maxByGroup = {};
+        currentLoadedData.forEach(row => {
+            const group = row.nom_subsistema || row.nom_usina || 'Geral';
+            const value = parseFloat(row[valueColumn]);
+            if (!isNaN(value)) {
+                if (!maxByGroup[group] || value > maxByGroup[group].value) {
+                    maxByGroup[group] = { value, row };
+                }
+            }
+        });
+
+        let response = '<div class="space-y-2"><p class="font-semibold text-dark-blue">📊 Valores Máximos:</p>';
+        Object.entries(maxByGroup).forEach(([group, data]) => {
+            response += `<p class="text-sm"><strong>${group}:</strong> ${data.value.toFixed(2)} MW</p>`;
+        });
+        response += '</div>';
+        aiResponseBox.innerHTML = response;
+    }
+
+    // Comparação entre subsistemas
+    function compareSubsystems() {
+        if (!currentLoadedData) return;
+
+        const groups = getUniqueValues(currentLoadedData, 'nom_subsistema');
+        const avgByGroup = {};
+
+        groups.forEach(group => {
+            const groupData = currentLoadedData.filter(r => r.nom_subsistema === group);
+            const values = groupData.map(r => parseFloat(r.val_cargaenergiahomwmed)).filter(v => !isNaN(v));
+            avgByGroup[group] = values.reduce((a, b) => a + b, 0) / values.length;
+        });
+
+        let response = '<div class="space-y-2"><p class="font-semibold text-dark-blue">📊 Comparação entre Subsistemas:</p>';
+        Object.entries(avgByGroup).sort((a, b) => b[1] - a[1]).forEach(([group, avg]) => {
+            response += `<p class="text-sm"><strong>${group}:</strong> ${avg.toFixed(2)} MW (média)</p>`;
+        });
+        response += '</div>';
+        aiResponseBox.innerHTML = response;
+    }
+
+    // Encontrar valores de pico
+    function findPeakValues() {
+        if (!currentLoadedData) return;
+
+        const values = currentLoadedData.map(r => ({
+            value: parseFloat(r.val_cargaenergiahomwmed || r.val_geracaohoraria),
+            time: r.din_instante,
+            group: r.nom_subsistema || r.nom_usina
+        })).filter(v => !isNaN(v.value));
+
+        values.sort((a, b) => b.value - a.value);
+        const top5 = values.slice(0, 5);
+
+        let response = '<div class="space-y-2"><p class="font-semibold text-dark-blue">⚡ Top 5 Valores de Pico:</p>';
+        top5.forEach((item, i) => {
+            response += `<p class="text-sm">${i + 1}. <strong>${item.value.toFixed(2)} MW</strong> - ${item.group} em ${new Date(item.time).toLocaleString('pt-BR')}</p>`;
+        });
+        response += '</div>';
+        aiResponseBox.innerHTML = response;
+    }
+
+    // Calcular médias
+    function calculateAverages() {
+        if (!currentLoadedData) return;
+
+        const valueColumn = 'val_cargaenergiahomwmed';
+        const values = currentLoadedData.map(r => parseFloat(r[valueColumn])).filter(v => !isNaN(v));
+
+        const avg = values.reduce((a, b) => a + b, 0) / values.length;
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+
+        aiResponseBox.innerHTML = `
+            <div class="space-y-2">
+                <p class="font-semibold text-dark-blue">📈 Estatísticas do Período:</p>
+                <p class="text-sm"><strong>Média:</strong> ${avg.toFixed(2)} MW</p>
+                <p class="text-sm"><strong>Mínimo:</strong> ${min.toFixed(2)} MW</p>
+                <p class="text-sm"><strong>Máximo:</strong> ${max.toFixed(2)} MW</p>
+                <p class="text-sm"><strong>Amplitude:</strong> ${(max - min).toFixed(2)} MW</p>
+            </div>
+        `;
+    }
+
     function handleQuestion(question) {
         const lowerCaseQuestion = question.toLowerCase();
 
         for (const qa of QA_PAIRS) {
             if (qa.keywords.some(keyword => lowerCaseQuestion.includes(keyword))) {
                 aiResponseBox.innerHTML = `<p>${qa.answer}</p>`;
-                
+
                 if (qa.chart_action) {
                     const action = qa.chart_action;
                     if (action.title) energyChart.options.plugins.title.text = action.title;
@@ -203,9 +305,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateChartToggles();
                 }
                 if (qa.action) {
-                    qa.action({ subsistemaSelector });
+                    qa.action({ yearSelector, monthSelector, daySelector, subsistemaSelector });
                 }
-                return; 
+                return;
             }
         }
 
@@ -252,7 +354,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (foundAction) {
-            energyChart.options.plugins.title.text = `Curvas de Carga e Geração`;
+            const year = yearSelector.value;
+            const month = monthSelector.value;
+            const day = daySelector.value;
+            energyChart.options.plugins.title.text = `Curvas de Carga e Geração - ${day}/${month}/${year}`;
         } else {
             responseText = `Não tenho uma resposta pronta para "${question}", mas a performance geral, com base nos dados de ${subsistemaSelector.options[subsistemaSelector.selectedIndex].text}, está dentro do esperado.`;
         }
@@ -262,12 +367,206 @@ document.addEventListener('DOMContentLoaded', () => {
         aiResponseBox.innerHTML = `<p>${responseText}</p>`;
     }
 
+    // Variável global para armazenar dados carregados
+    let currentLoadedData = null;
+    let currentDatasetId = null;
+
+    // Função para carregar dados reais do ONS
+    async function loadONSData() {
+        const datasetId = datasetSelector.value;
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
+
+        if (!datasetId || !startDate || !endDate) {
+            aiResponseBox.innerHTML = '<p class="text-yellow-600">Por favor, selecione um dataset e período para carregar dados reais.</p>';
+            return;
+        }
+
+        try {
+            aiResponseBox.innerHTML = '<p class="text-blue-600">⏳ Carregando dados do ONS...</p>';
+
+            const datasetInfo = getDatasetInfo(datasetId);
+            const data = await loadDatasetData(datasetId, startDate, endDate);
+
+            if (data.length === 0) {
+                aiResponseBox.innerHTML = `<p class="text-orange-600">Nenhum dado encontrado para o período selecionado. Os arquivos podem não estar disponíveis no S3 do ONS.</p>
+                <p class="text-sm text-gray-600 mt-2">Você pode explorar o bucket com o comando:</p>
+                <code class="block bg-gray-100 p-2 rounded mt-1 text-xs">${getAWSCLICommand(datasetId)}</code>`;
+                return;
+            }
+
+            // Armazena dados carregados
+            currentLoadedData = data;
+            currentDatasetId = datasetId;
+
+            // Gera resumo contextual
+            const summary = generateDatasetSummary(datasetId, data);
+            const metadata = getDatasetMetadata(datasetId);
+
+            aiResponseBox.innerHTML = `
+                <div class="space-y-2">
+                    <p class="font-medium text-green-600">✓ Dados carregados com sucesso!</p>
+                    <div class="text-sm text-gray-700 space-y-1">
+                        <p><strong>${datasetInfo.name}</strong></p>
+                        <p>📅 ${startDate} a ${endDate}</p>
+                        <p>📊 ${data.length.toLocaleString('pt-BR')} registros</p>
+                    </div>
+                    ${metadata && metadata.dictionaryUrl ? `
+                        <a href="${metadata.dictionaryUrl}" target="_blank" class="text-xs text-blue-600 hover:underline">
+                            📄 Ver dicionário de dados
+                        </a>
+                    ` : ''}
+                </div>
+            `;
+
+            // Atualiza perguntas sugeridas dinamicamente
+            updateDynamicFAQs(datasetId, data);
+
+            // Gera visualização automática
+            renderDatasetVisualization(datasetId, data);
+
+        } catch (error) {
+            aiResponseBox.innerHTML = `<p class="text-red-600">Erro ao carregar dados: ${error.message}</p>
+            <p class="text-sm text-gray-600 mt-2">Verifique a conexão ou tente outro período.</p>`;
+        }
+    }
+
+    // Atualiza FAQs dinamicamente baseado no dataset
+    function updateDynamicFAQs(datasetId, data) {
+        const metadata = getDatasetMetadata(datasetId);
+        if (!metadata) return;
+
+        // Gera perguntas contextuais
+        const context = {
+            date: startDateInput.value,
+            subsistema: subsistemaSelector.value
+        };
+        const questions = generateContextualQuestions(datasetId, context);
+
+        // Limpa e adiciona novas FAQs
+        faqContainer.innerHTML = '';
+        questions.forEach(q => {
+            const faqButton = document.createElement('button');
+            faqButton.className = 'bg-gradient-to-r from-blue-100 to-blue-50 hover:from-blue-200 hover:to-blue-100 text-dark-blue text-sm font-medium py-2 px-3 rounded-lg transition shadow-sm';
+            faqButton.textContent = q;
+            faqButton.onclick = () => {
+                aiQuestionInput.value = q;
+                handleContextualQuestion(q);
+            };
+            faqContainer.appendChild(faqButton);
+        });
+    }
+
+    // Renderiza visualização baseada nos metadados do dataset
+    function renderDatasetVisualization(datasetId, data) {
+        const metadata = getDatasetMetadata(datasetId);
+        if (!metadata || !data.length) return;
+
+        const vizConfig = suggestVisualization(datasetId, data);
+        if (!vizConfig) return;
+
+        // Prepara dados para o gráfico
+        const labels = [];
+        const datasets = {};
+
+        // Para série temporal
+        if (vizConfig.type === 'line' || vizConfig.type === 'bar') {
+            const groupByField = vizConfig.groupBy;
+            const xField = vizConfig.xAxis;
+            const yField = vizConfig.yAxis;
+
+            // Agrupa dados
+            data.forEach(row => {
+                const xValue = row[xField];
+                const yValue = parseFloat(row[yField]);
+                const group = row[groupByField];
+
+                if (!xValue || isNaN(yValue)) return;
+
+                if (!labels.includes(xValue)) {
+                    labels.push(xValue);
+                }
+
+                if (!datasets[group]) {
+                    datasets[group] = {
+                        label: group,
+                        data: [],
+                        borderColor: getColorForGroup(group),
+                        backgroundColor: getColorForGroup(group, 0.2)
+                    };
+                }
+
+                datasets[group].data.push({ x: xValue, y: yValue });
+            });
+
+            // Atualiza gráfico
+            energyChart.data.labels = labels.slice(0, 100); // Limita para performance
+            energyChart.data.datasets = Object.values(datasets).map(ds => ({
+                ...ds,
+                type: vizConfig.type
+            }));
+            energyChart.options.plugins.title.text = vizConfig.title;
+            energyChart.update();
+            updateChartToggles();
+
+            console.log(`📈 Visualização gerada: ${vizConfig.title}`);
+        }
+    }
+
+    // Helper para gerar cores por grupo
+    function getColorForGroup(group, alpha = 1) {
+        const colors = {
+            'NORTE': `rgba(46, 204, 113, ${alpha})`,
+            'NORDESTE': `rgba(241, 196, 15, ${alpha})`,
+            'SUL': `rgba(52, 152, 219, ${alpha})`,
+            'SUDESTE': `rgba(231, 76, 60, ${alpha})`
+        };
+        return colors[group] || `rgba(149, 165, 166, ${alpha})`;
+    }
+
     // --- EVENT LISTENERS --- //
-    subsistemaSelector.addEventListener('change', (e) => updateDashboard(e.target.value));
-    yearSelector.addEventListener('change', (e) => updateDashboard(subsistemaSelector.value));
-    monthSelector.addEventListener('change', (e) => updateDashboard(subsistemaSelector.value));
-    daySelector.addEventListener('change', (e) => updateDashboard(subsistemaSelector.value));
-    hourSelector.addEventListener('change', (e) => updateDashboard(subsistemaSelector.value));
+    subsistemaSelector.addEventListener('change', () => updateDashboard());
+    yearSelector.addEventListener('change', () => updateDashboard());
+    monthSelector.addEventListener('change', () => updateDashboard());
+    daySelector.addEventListener('change', () => updateDashboard());
+    hourSelector.addEventListener('change', () => updateDashboard());
+
+    // Listener para mudança de dataset
+    datasetSelector.addEventListener('change', () => {
+        const datasetId = datasetSelector.value;
+        if (datasetId) {
+            const info = getDatasetInfo(datasetId);
+            aiResponseBox.innerHTML = `
+                <p class="font-medium text-dark-blue">Dataset selecionado:</p>
+                <p class="text-sm text-gray-700 mt-1"><strong>${info.name}</strong></p>
+                <p class="text-xs text-gray-600 mt-1">${info.description}</p>
+                <p class="text-xs text-gray-500 mt-2">Selecione o período e o sistema irá buscar os dados do S3 do ONS.</p>
+            `;
+        }
+    });
+
+    // Listener para mudança de datas
+    startDateInput.addEventListener('change', () => {
+        if (datasetSelector.value && startDateInput.value && endDateInput.value) {
+            loadONSData();
+        }
+    });
+
+    endDateInput.addEventListener('change', () => {
+        if (datasetSelector.value && startDateInput.value && endDateInput.value) {
+            loadONSData();
+        }
+    });
+
+    // Inicializa as datas com valores padrão
+    function initializeDateInputs() {
+        const today = new Date();
+        const lastWeek = new Date(today);
+        lastWeek.setDate(lastWeek.getDate() - 7);
+
+        startDateInput.value = lastWeek.toISOString().split('T')[0];
+        endDateInput.value = today.toISOString().split('T')[0];
+    }
 
     askButton.addEventListener('click', () => {
         const question = aiQuestionInput.value;
@@ -281,8 +580,34 @@ document.addEventListener('DOMContentLoaded', () => {
         aiQuestionInput.value = '';
     });
 
+    // Função para atualizar datasets em background
+    async function updateDatasetsInBackground() {
+        console.log('🔄 Verificando atualizações de datasets...');
+
+        const currentYear = new Date().getFullYear();
+        const datasetId = 'hourly-curve';
+
+        try {
+            // Tenta baixar dados do ano atual do S3
+            const files = getDatasetFiles(datasetId, `${currentYear}-01-01`, `${currentYear}-12-31`);
+
+            if (files.length > 0) {
+                console.log(`📡 Atualizando dados de ${currentYear}...`);
+                // Nota: Em produção, você implementaria um service worker ou backend
+                // para salvar os novos dados localmente
+            }
+        } catch (error) {
+            console.log('⚠️ Não foi possível atualizar datasets:', error.message);
+        }
+    }
+
     // --- INICIALIZAÇÃO --- //
-    populateMockData();
     populateTimeFilters();
-    updateDashboard('geral');
+    initializeDateInputs();
+    updateDashboard();
+
+    // Atualiza datasets em background após 2 segundos
+    setTimeout(() => {
+        updateDatasetsInBackground();
+    }, 2000);
 });
